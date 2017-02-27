@@ -21,6 +21,7 @@
 #include <mbgl/style/transition_options.hpp>
 #include <mbgl/style/layers/custom_layer.hpp>
 #include <mbgl/map/backend.hpp>
+#include <mbgl/map/backend_scope.hpp>
 #include <mbgl/math/wrap.hpp>
 #include <mbgl/util/geo.hpp>
 #include <mbgl/util/constants.hpp>
@@ -601,21 +602,6 @@ public:
     [_glView bindDrawable];
     [self insertSubview:_glView atIndex:0];
     _glView.contentMode = UIViewContentModeCenter;
-
-    // load extensions
-    //
-    mbgl::gl::InitializeExtensions([](const char * name) {
-        static CFBundleRef framework = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengles"));
-        if (!framework) {
-            throw std::runtime_error("Failed to load OpenGL framework.");
-        }
-
-        CFStringRef str = CFStringCreateWithCString(kCFAllocatorDefault, name, kCFStringEncodingASCII);
-        void* symbol = CFBundleGetFunctionPointerForName(framework, str);
-        CFRelease(str);
-
-        return reinterpret_cast<mbgl::gl::glProc>(symbol);
-    });
 }
 
 - (UIImage *)compassImage
@@ -873,6 +859,9 @@ public:
 {
     if ( ! self.dormant)
     {
+        // The OpenGL implementation automatically enables the OpenGL context for us.
+        mbgl::BackendScope scope { *_mbglView, mbgl::BackendScope::ScopeType::Implicit };
+
         _mbglView->updateViewBinding();
         _mbglMap->render(*_mbglView);
 
@@ -5351,6 +5340,20 @@ public:
     void notifyMapChange(mbgl::MapChange change) override
     {
         [nativeView notifyMapChange:change];
+    }
+
+    mbgl::gl::ProcAddress initializeExtension(const char* name) override {
+        static CFBundleRef framework = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengles"));
+        if (!framework) {
+            throw std::runtime_error("Failed to load OpenGL framework.");
+        }
+
+        CFStringRef str =
+            CFStringCreateWithCString(kCFAllocatorDefault, name, kCFStringEncodingASCII);
+        void* symbol = CFBundleGetFunctionPointerForName(framework, str);
+        CFRelease(str);
+
+        return reinterpret_cast<mbgl::gl::ProcAddress>(symbol);
     }
 
     void invalidate() override

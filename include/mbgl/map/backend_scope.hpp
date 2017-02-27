@@ -6,13 +6,21 @@ class Backend;
 
 class BackendScope {
 public:
-    BackendScope(Backend&);
+    enum class ScopeType : bool {
+        Implicit,
+        Explicit,
+    };
+
+    BackendScope(Backend&, ScopeType = ScopeType::Explicit);
     ~BackendScope();
+
+    static bool exists();
 
 private:
     BackendScope* priorScope;
     BackendScope* nextScope;
     Backend& backend;
+    const ScopeType scopeType;
 };
 
 } // namespace mbgl

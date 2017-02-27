@@ -27,6 +27,7 @@ using namespace std::literals::string_literals;
 struct MapTest {
     util::RunLoop runLoop;
     HeadlessBackend backend { test::sharedDisplay() };
+    BackendScope scope { backend };
     OffscreenView view { backend.getContext() };
     StubFileSource fileSource;
     ThreadPool threadPool { 4 };
@@ -542,6 +543,7 @@ public:
 TEST(Map, TEST_DISABLED_ON_CI(ContinuousRendering)) {
     util::RunLoop runLoop;
     MockBackend backend { test::sharedDisplay() };
+    BackendScope scope { backend };
     OffscreenView view { backend.getContext() };
     ThreadPool threadPool { 4 };
 
@@ -575,7 +577,7 @@ TEST(Map, TEST_DISABLED_ON_CI(ContinuousRendering)) {
             });
         }
 
-        BackendScope scope(backend);
+        BackendScope scope2(backend);
         map.render(view);
     }};
 
