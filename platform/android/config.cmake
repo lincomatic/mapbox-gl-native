@@ -250,11 +250,6 @@ target_link_libraries(mapbox-gl
     PUBLIC -Wl,--gc-sections
 )
 
-# Create a stripped version of the library and copy it to the JNIDIR.
-add_custom_command(TARGET mapbox-gl POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${ANDROID_JNI_TARGET_DIR}
-                   COMMAND ${ANDROID_TOOLCHAIN_PREFIX}strip $<TARGET_FILE:mapbox-gl> -o ${ANDROID_JNI_TARGET_DIR}/$<TARGET_FILE_NAME:mapbox-gl>)
-
 ## Test library ##
 
 add_library(mbgl-test SHARED
@@ -311,11 +306,6 @@ target_add_mason_package(mbgl-test PRIVATE boost)
 target_add_mason_package(mbgl-test PRIVATE geojson)
 target_add_mason_package(mbgl-test PRIVATE geojsonvt)
 
-add_custom_command(TARGET mbgl-test POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/stripped
-                   COMMAND ${ANDROID_TOOLCHAIN_PREFIX}strip $<TARGET_FILE:mapbox-gl> -o ${CMAKE_CURRENT_BINARY_DIR}/stripped/$<TARGET_FILE_NAME:mapbox-gl>
-                   COMMAND ${ANDROID_TOOLCHAIN_PREFIX}strip $<TARGET_FILE:mbgl-test> -o ${CMAKE_CURRENT_BINARY_DIR}/stripped/$<TARGET_FILE_NAME:mbgl-test>)
-
 ## Custom layer example ##
 
 add_library(example-custom-layer SHARED
@@ -332,7 +322,3 @@ target_link_libraries(example-custom-layer
     PRIVATE mapbox-gl
     PUBLIC -Wl,--gc-sections
 )
-
-add_custom_command(TARGET example-custom-layer POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E make_directory ${ANDROID_TEST_APP_JNI_TARGET_DIR}
-                   COMMAND ${ANDROID_TOOLCHAIN_PREFIX}strip $<TARGET_FILE:example-custom-layer> -o ${ANDROID_TEST_APP_JNI_TARGET_DIR}/$<TARGET_FILE_NAME:example-custom-layer>)
