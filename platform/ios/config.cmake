@@ -3,12 +3,12 @@ add_definitions(-DMBGL_USE_GLES2=1)
 mason_use(icu VERSION 58.1-min-size)
 
 macro(mbgl_platform_core)
-    set_xcode_property(mbgl-core IPHONEOS_DEPLOYMENT_TARGET "8.0")
-    set_xcode_property(mbgl-core ENABLE_BITCODE "YES")
-    set_xcode_property(mbgl-core BITCODE_GENERATION_MODE bitcode)
-    set_xcode_property(mbgl-core ONLY_ACTIVE_ARCH $<$<CONFIG:Debug>:YES>)
+    set_xcode_property(mbgl-core-ios IPHONEOS_DEPLOYMENT_TARGET "8.0")
+    set_xcode_property(mbgl-core-ios ENABLE_BITCODE "YES")
+    set_xcode_property(mbgl-core-ios BITCODE_GENERATION_MODE bitcode)
+    set_xcode_property(mbgl-core-ios ONLY_ACTIVE_ARCH $<$<CONFIG:Debug>:YES>)
 
-    target_sources(mbgl-core
+    target_sources(mbgl-core-ios
         # Loop
         PRIVATE platform/darwin/src/async_task.cpp
         PRIVATE platform/darwin/src/run_loop.cpp
@@ -64,10 +64,10 @@ macro(mbgl_platform_core)
         PRIVATE platform/default/mbgl/util/default_thread_pool.cpp
     )
 
-    target_add_mason_package(mbgl-core PUBLIC geojson)
-    target_add_mason_package(mbgl-core PUBLIC icu)
+    target_add_mason_package(mbgl-core-ios PUBLIC geojson)
+    target_add_mason_package(mbgl-core-ios PUBLIC icu)
 
-    target_compile_options(mbgl-core
+    target_compile_options(mbgl-core-ios
         PRIVATE -fobjc-arc
     )
 
@@ -78,12 +78,12 @@ macro(mbgl_platform_core)
         COMPILE_FLAGS -fno-objc-arc
     )
 
-    target_include_directories(mbgl-core
+    target_include_directories(mbgl-core-ios
         PUBLIC platform/darwin
         PUBLIC platform/default
     )
 
-    target_link_libraries(mbgl-core
+    target_link_libraries(mbgl-core-ios
         PUBLIC -lz
     )
 endmacro()

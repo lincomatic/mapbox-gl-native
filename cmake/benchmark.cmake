@@ -15,7 +15,7 @@ target_include_directories(mbgl-benchmark
 )
 
 target_link_libraries(mbgl-benchmark
-    PRIVATE mbgl-core
+    PRIVATE mbgl-core${MBGL_TARGET_SUFFIX}
 )
 
 target_add_mason_package(mbgl-benchmark PRIVATE benchmark)

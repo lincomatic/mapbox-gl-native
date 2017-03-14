@@ -22,7 +22,7 @@ target_include_directories(mbgl-glfw
 )
 
 target_link_libraries(mbgl-glfw
-    PRIVATE mbgl-core
+    PRIVATE mbgl-core${MBGL_TARGET_SUFFIX}
 )
 
 target_add_mason_package(mbgl-glfw PRIVATE glfw)

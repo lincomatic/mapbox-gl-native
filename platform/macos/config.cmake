@@ -9,7 +9,7 @@ mason_use(icu VERSION 58.1-min-size)
 include(cmake/loop-darwin.cmake)
 
 macro(mbgl_platform_core)
-    target_sources(mbgl-core
+    target_sources(mbgl-core-macos
         # File source
         PRIVATE platform/darwin/src/http_file_source.mm
         PRIVATE platform/default/asset_file_source.cpp
@@ -60,20 +60,20 @@ macro(mbgl_platform_core)
         PRIVATE platform/default/mbgl/util/default_thread_pool.cpp
     )
 
-    target_add_mason_package(mbgl-core PUBLIC geojson)
-    target_add_mason_package(mbgl-core PUBLIC icu)
+    target_add_mason_package(mbgl-core-macos PUBLIC geojson)
+    target_add_mason_package(mbgl-core-macos PUBLIC icu)
 
-    target_compile_options(mbgl-core
+    target_compile_options(mbgl-core-macos
         PRIVATE -fobjc-arc
         PRIVATE -fvisibility=hidden
     )
 
-    target_include_directories(mbgl-core
+    target_include_directories(mbgl-core-macos
         PUBLIC platform/darwin
         PUBLIC platform/default
     )
 
-    target_link_libraries(mbgl-core
+    target_link_libraries(mbgl-core-macos
         PUBLIC -lz
     )
 endmacro()

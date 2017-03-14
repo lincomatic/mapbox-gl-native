@@ -18,7 +18,7 @@ target_include_directories(mbgl-offline
 )
 
 target_link_libraries(mbgl-offline
-    PRIVATE mbgl-core
+    PRIVATE mbgl-core${MBGL_TARGET_SUFFIX}
 )
 
 target_add_mason_package(mbgl-offline PRIVATE boost)

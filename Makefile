@@ -74,7 +74,7 @@ MACOS_XCSCHEMES += platform/macos/scripts/node.xcscheme
 
 $(MACOS_PROJ_PATH): $(BUILD_DEPS) $(MACOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings $(MACOS_XCSCHEMES)
 	mkdir -p $(MACOS_OUTPUT_PATH)
-	(cd $(MACOS_OUTPUT_PATH) && cmake -G Xcode -DMBGL_PROJECT_NAME=mbgl-macos ../..)
+	(cd $(MACOS_OUTPUT_PATH) && cmake -G Xcode -DMBGL_TARGET_SUFFIX=-macos ../..)
 
 	@# Create Xcode schemes so that we can use xcodebuild from the command line. CMake doesn't
 	@# create these automatically.
@@ -83,7 +83,7 @@ $(MACOS_PROJ_PATH): $(BUILD_DEPS) $(MACOS_USER_DATA_PATH)/WorkspaceSettings.xcse
 	XCODEPROJ=$(MACOS_PROJ_PATH) SCHEME_NAME="macOS render" SCHEME_TYPE=executable BLUEPRINT_NAME=mbgl-render BUILDABLE_NAME=mbgl-render platform/macos/scripts/create_scheme.sh
 	XCODEPROJ=$(MACOS_PROJ_PATH) SCHEME_NAME="macOS offline" SCHEME_TYPE=executable BLUEPRINT_NAME=mbgl-offline BUILDABLE_NAME=mbgl-offline platform/macos/scripts/create_scheme.sh
 	XCODEPROJ=$(MACOS_PROJ_PATH) SCHEME_NAME="macOS GLFW app" SCHEME_TYPE=executable BLUEPRINT_NAME=mbgl-glfw BUILDABLE_NAME=mbgl-glfw platform/macos/scripts/create_scheme.sh
-	XCODEPROJ=$(MACOS_PROJ_PATH) SCHEME_NAME="macOS core library" SCHEME_TYPE=library BLUEPRINT_NAME=mbgl-core BUILDABLE_NAME=libmbgl-core.a BLUEPRINT_NAME=mbgl-core platform/macos/scripts/create_scheme.sh
+	XCODEPROJ=$(MACOS_PROJ_PATH) SCHEME_NAME="macOS core library" SCHEME_TYPE=library BLUEPRINT_NAME=mbgl-core-macos BUILDABLE_NAME=libmbgl-core-macos.a BLUEPRINT_NAME=mbgl-core-macos platform/macos/scripts/create_scheme.sh
 
 	@# Create schemes for running node tests. These have all of the environment variables set to
 	@# launch in the correct location.
@@ -200,13 +200,13 @@ IOS_XCODEBUILD_SIM = xcodebuild \
 $(IOS_PROJ_PATH): $(BUILD_DEPS) $(MACOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings $(MACOS_XCSCHEMES)
 	mkdir -p $(IOS_OUTPUT_PATH)
 	(cd $(IOS_OUTPUT_PATH) && cmake -G Xcode ../.. \
-		-DMBGL_PROJECT_NAME=mbgl-ios \
+		-DMBGL_TARGET_SUFFIX=-ios \
 		-DCMAKE_TOOLCHAIN_FILE=../../platform/ios/toolchain.cmake \
 		-DMBGL_PLATFORM=ios \
 		-DMASON_PLATFORM=ios \
 		-DMASON_PLATFORM_VERSION=8.0)
 
-	XCODEPROJ=$(IOS_PROJ_PATH) SCHEME_NAME="iOS core library" SCHEME_TYPE=library BLUEPRINT_NAME=mbgl-core BUILDABLE_NAME=libmbgl-core.a BLUEPRINT_NAME=mbgl-core platform/macos/scripts/create_scheme.sh
+	XCODEPROJ=$(IOS_PROJ_PATH) SCHEME_NAME="iOS core library" SCHEME_TYPE=library BLUEPRINT_NAME=mbgl-core-ios BUILDABLE_NAME=libmbgl-core-macos.a BLUEPRINT_NAME=mbgl-core-ios platform/macos/scripts/create_scheme.sh
 
 .PHONY: ios
 ios: $(IOS_PROJ_PATH)

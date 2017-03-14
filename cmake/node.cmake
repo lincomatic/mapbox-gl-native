@@ -41,7 +41,7 @@ target_include_directories(mbgl-node
 )
 
 target_link_libraries(mbgl-node
-    PRIVATE mbgl-core
+    PRIVATE mbgl-core${MBGL_TARGET_SUFFIX}
 )
 
 target_add_mason_package(mbgl-node PRIVATE geojson)
